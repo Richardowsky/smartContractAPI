@@ -1,23 +1,29 @@
 {
   "name": "untitled",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "./node_modules/.bin/nodemon --watch src --exec babel-node -- src/index.js"
   },
   "keywords": [],
   "author": "Konstantin Lysenko",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "nodemon": "^1.19.4",
     "truffle-hdwallet-provider": "^1.0.17"
   },
   "dependencies": {
+    "@babel/cli": "7.5.5",
+    "@babel/core": "7.5.5",
+    "@babel/node": "7.5.5",
+    "@babel/polyfill": "7.4.4",
+    "@babel/preset-env": "7.5.5",
+    "body-parser": "latest",
     "express": "^4.17.1",
-    "mongoose": "^5.7.6",
-    "web3": "^1.2.2",
-    "body-parser": "latest"
+    "mongoose": "^5.7.7",
+    "web3": "^1.2.2"
   }
 }
