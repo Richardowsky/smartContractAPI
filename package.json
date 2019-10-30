@@ -1,0 +1,23 @@
+{
+  "name": "untitled",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Konstantin Lysenko",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^1.19.4",
+    "truffle-hdwallet-provider": "^1.0.17"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.7.6",
+    "web3": "^1.2.2",
+    "body-parser": "latest"
+  }
+}
