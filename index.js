@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 
 const mainAddress = '0x17d0108b882f45d188748c5ff32ff6f276c8e85e';
 const marketAddress = "0x3798B9B9b75A8a5AB589B18FaD9Fc7AcD161892C";
-const abiMarket = JSON.parse(fs.readFileSync('contracts/Market.json', "utf-8"))["abi"];
+const abiMarket = JSON.parse(fs.readFileSync('Market.json', "utf-8"))["abi"];
 const market = new web3.eth.Contract(abiMarket, marketAddress);
 
 
