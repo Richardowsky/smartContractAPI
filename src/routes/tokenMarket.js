@@ -1,5 +1,6 @@
 import express from "express";
-import {mainAddress, market} from "./wallet.js";
+import {mainAddress, market, web3} from "../config/wallet.js";
+import * as projectJSON from "../contracts/Project";
 
 const router = express.Router();
 
@@ -12,54 +13,62 @@ router.post('/market', async function (req, res) {
         price,
     } = req.body.token;
 
-    await market.methods.createProject(name, description, symbol, initialSupply, price).send({from: mainAddress}, function (error, transactionHash) {
-        res.end(JSON.stringify({"Token": name, "txHash": transactionHash}));
-    });
+    const transactionHash = await market.methods.createProject(name, description, symbol, initialSupply, price).send({from: mainAddress});
+    res.json(transactionHash);
 });
 
-router.get('/:name/address', async function (req, res) {
+router.get('/market/:name/address', async function (req, res) {
     const result = await market.methods.getProject(req.params.name).call();
-    res.end(JSON.stringify({"address": result}));
+    res.json(result);
 });
 
-router.get('/:name/description', async function (req, res) {
+router.get('/market/:name/description', async function (req, res) {
     const result = await market.methods.getProjectInfo(req.params.name).call();
-    res.end(JSON.stringify({"description": result}));
+    res.json(result);
 });
 
-router.get('/:name/price', async function (req, res) {
+router.get('/market/:name/price', async function (req, res) {
     const result = await market.methods.getPrice(req.params.name).call();
-    res.end(JSON.stringify({"price": result}));
+    res.json(result);
 });
 
-router.get('/:name/shares', async function (req, res) {
+router.get('/market/:name/shares', async function (req, res) {
     const result = await market.methods.getSharesCount(req.params.name).call();
-    res.end(JSON.stringify({"shares": result}));
+    res.json(result);
 });
 
-router.post('/buy', async function (req, res) {
+router.post('/market/:name/buy', async function (req, res) {
+    const name = req.params.name;
     const {
-        name,
         amount,
+        address,
     } = req.body;
+    const price = await market.methods.getPrice(name).call();
     const result = await market.methods.buyProjectShares(name, amount).send({
-        from: mainAddress,
-        gasLimit: 550000
+        from: address,
+        value: price * amount,
+        gasLimit: 550000,
     });
-    res.end(JSON.stringify({"Buy": name, "txHash": result}));
-
+    res.json(result);
 });
 
-router.post('/sell', async function (req, res) {
+router.post('/market/:name/sell', async function (req, res) {
+    const name = req.params.name;
     const {
-        name,
         amount,
+        address,
     } = req.body;
+    const projectAddress = await market.methods.getProject(name).call();
+    const { abi: abiProject } = projectJSON;
+
+    const project = new web3.eth.Contract(abiProject, projectAddress);
+    const { address: marketAddress } = market.options;
+    await project.methods.approve(marketAddress, amount).send({from: address});
     const result = await market.methods.sellProjectShares(name, amount).send({
-        from: mainAddress,
-        gasLimit: 550000
+        from: address,
+        gasLimit: 5500000
     });
-    res.end(JSON.stringify({"Sell": name, "txHash": result}));
+    res.json(result);
 });
 
 export default router;
